@@ -24,3 +24,13 @@ export const register = async(req,res)=>{
         res.status(409).send({message:error.message})       
     } 
 }
+
+export const getUserInfo = async (req,res) =>{
+    try {
+        const user = await User.findById(req.userId)
+        if(!user) return res.status(404).send({message:"Invalid id"})
+        res.status(200).send({firstname:user.firstname,lastname:user.lastname})
+    } catch (error) {
+        res.status(404).send({message:error.message})
+    }
+}

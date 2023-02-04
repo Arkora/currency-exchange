@@ -15,9 +15,9 @@ export const login =  async(req,res) =>{
         const isPasswordCorrect = await bcrypt.compare(password,user.password)
         if(!isPasswordCorrect) return res.status(400).send({message:"Bad Credentials"})
 
-        const token = jwt.sign({usedId:user._id,email:user.email},accessTokenSecret,{expiresIn:"1h"})        
+        const token = jwt.sign({userId:user._id,email:user.email},accessTokenSecret,{expiresIn:"1h"})        
 
-        res.status(200).send({token:token})
+        res.status(200).send({firstname:user.firstname,lastname:user.lastname,token:token})
     } catch (error) {
         res.status(404).send({message:error.message})
     }

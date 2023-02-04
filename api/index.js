@@ -1,26 +1,38 @@
 import express from 'express'
-import Cors from 'cors'
+import cors from 'cors'
 import bodyParser from 'body-parser'
 import mongoose from "mongoose"
 import dotenv from 'dotenv'
 import UserRouter from './routes/UserRouter.js'
 import AuthRouter from './routes/AuthRouter.js'
+import CurrencyRouter from './routes/CurrencyRouter.js'
 import auth from './middlewares/Auth.js'
 
 
-dotenv.config()
+
 const app = express()
-
-const PORT = 8000
-
-app.use(Cors())
+dotenv.config()
 app.use(bodyParser.json())
+
+app.use(cors({
+    credentials: true,
+    origin:'http://localhost:3000',    
+}))
+
+
+
 app.use('/api/v1/user',UserRouter)
 app.use('/api/v1/auth',AuthRouter)
+app.use('/api/v1/currency',CurrencyRouter)
 
 app.get('/',(req,res) =>{
     res.send("Currency API v1.0");
-});
+})
+
+
+
+
+const PORT = 8000
 
 
 
