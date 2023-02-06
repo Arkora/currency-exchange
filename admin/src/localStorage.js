@@ -19,4 +19,14 @@ export const getToken = () =>{
        : ''
        return token
  }
+export const getCurrencies = () =>{
+    const currencies = localStorage.getItem('currencies')
+    ? JSON.parse(localStorage.getItem('currencies'))
+       : []
+       return currencies
+ }
+
+ export const setCurrencies = (currencies) =>{
+    localStorage.setItem('currencies',JSON.stringify(currencies))
+ }
 

@@ -6,6 +6,7 @@ import dotenv from 'dotenv'
 import UserRouter from './routes/UserRouter.js'
 import AuthRouter from './routes/AuthRouter.js'
 import CurrencyRouter from './routes/CurrencyRouter.js'
+import ExchangeRouter from './routes/ExchangeRouter.js'
 import auth from './middlewares/Auth.js'
 
 
@@ -24,6 +25,7 @@ app.use(cors({
 app.use('/api/v1/user',UserRouter)
 app.use('/api/v1/auth',AuthRouter)
 app.use('/api/v1/currency',CurrencyRouter)
+app.use('/api/v1/exchange',ExchangeRouter)
 
 app.get('/',(req,res) =>{
     res.send("Currency API v1.0");

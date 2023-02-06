@@ -1,7 +1,7 @@
 import React,{useEffect,useState,useRef} from 'react'
 import { useParams } from 'react-router-dom'
 import Header from '../components/Header'
-import { getCurrency } from '../api'
+import { deleteCurrency, getCurrency, updateCurrency } from '../api'
 import Alerts from '../components/Alerts'
 
 const EditCurrency = () => {
@@ -20,32 +20,42 @@ const EditCurrency = () => {
     const symbolRef = useRef<HTMLInputElement>(null!)
     const [currencyFormData,setCurrencyFormData] = useState<currencyData>({name:'',currency:'',symbol:''})
     const [formErrors, setFormErrors] = useState<any|string>({})
+    const [toggle, setToggle] = useState<boolean>(false)
+    
 
 
 
-    const fetchCurrency = async () =>{
+    const fetchCurrency = async() =>{
         try{
             const {data} = await getCurrency(params.id)
             setCurrency(data)
-            nameRef.current.value = currency.data.name
-            currencyRef.current.value = currency.data.currency
-            symbolRef.current.value = currency.data.symbol
+            nameRef.current.value = data.name
+            currencyRef.current.value = data.currency
+            symbolRef.current.value = data.symbol
+            setCurrencyFormData({name:data.name,currency:data.currency,symbol:data.symbol})
         }catch(error:any){
             setAlert({...alert,err:error.response.data.message})
         }
     }
 
-    const handleCurrencyFormData = async(e:React.FormEvent<HTMLFormElement>) =>{
-        e.preventDefault()
-        try{        
-         
-          nameRef.current.value = ''
-          currencyRef.current.value = ''
-          symbolRef.current.value = ''
+    const handleCurrencyFormData = async() =>{
+        try{      
+          const {data} = await updateCurrency(params.id,currencyFormData)                        
+            setAlert({...alert,res:data.message})
+            fetchCurrency()
         }catch(error:any){
+            setAlert({...alert,err:error.response.data.message})
         }
       }
-
+    const handleDelete = async() =>{
+        try{
+            const {data} = await deleteCurrency(params.id)
+            setAlert({...alert,res:data.message})
+        }catch(error:any){
+            setAlert({...alert,err:error.response.data.message})
+        }
+    }
+    
     useEffect(()=>{
         fetchCurrency()        
     },[])
@@ -54,8 +64,11 @@ const EditCurrency = () => {
         <Header />
         <div className='flex h-screen justify-center items-center w-full'>            
             <div className=''>
-                <Alerts alert={alert} setAlert={setAlert} />
-                <form className='flex my-8 gap-2 bg-gray-200 p-4 rounded-md ' onSubmit={handleCurrencyFormData}>
+                <div className='flex justify-center'>
+                    <Alerts alert={alert} setAlert={setAlert} />
+                </div>
+                <div>
+                <div className='flex my-2 gap-2 bg-gray-200 p-4 rounded-md '>
                     <div>
                         <p>Name:</p>
                         <input ref={nameRef} type="text" placeholder='Name'  className='w-44 h-10 border border-black rounded-md px-4' onChange={(e) => setCurrencyFormData({...currencyFormData,name:e.target.value})}/>
@@ -72,10 +85,21 @@ const EditCurrency = () => {
                         <p className='text-red-500 text-sm'>{formErrors.symbol}</p>
                     </div>
                     <div className='mt-6 '>
-                        <button className='green-button' onClick={() =>handleCurrencyFormData}>Update</button>
-                        <button className='red-button ml-2'>Delete</button>
+                        <button className='green-button' onClick={handleCurrencyFormData}>Update</button>
+                        <button className='red-button ml-2' onClick={() =>setToggle(!toggle)}>Delete</button>
                     </div>
-                </form>
+                </div>
+
+                </div>
+                <div className={toggle?'flex justify-end mt-2 ':'hidden'} >
+                    <div className='w-1/2 rounded-lg p-6 h-40 bg-gray-200'>
+                        <h6 className='text-center'>Are you sure want to delete permantly?</h6>
+                        <div className='flex justify-center p-4 gap-4'>
+                            <button className='customButton'onClick={handleDelete}>Yes</button>
+                            <button className='customButton' onClick={() =>setToggle(false)}>No</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

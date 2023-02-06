@@ -2,6 +2,7 @@ import React,{useEffect,useState,useRef} from 'react'
 import { createCurrency,findCurrency } from '../api';
 import { useNavigate } from 'react-router-dom';
 import Alerts from './Alerts';
+import { getCurrencies } from '../localStorage';
 
 const Currencies = ({data}:any) => {
   interface currencyData{
@@ -54,7 +55,7 @@ const Currencies = ({data}:any) => {
     }else(
       queryRef.current.value = null!
     )
-      setCurrencies(data)
+      setCurrencies(getCurrencies())
     
   },[query])
 

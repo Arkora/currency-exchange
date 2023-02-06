@@ -1,7 +1,7 @@
 import React from 'react'
 import {AiOutlinePoweroff} from 'react-icons/ai'
-import { getUser, setUser } from '../localStorage'
-import { useNavigate } from 'react-router-dom'
+import { getUser} from '../localStorage'
+import { useNavigate,Link } from 'react-router-dom'
 const Header = () => {
     const navigate = useNavigate()
     const user = getUser()
@@ -13,8 +13,8 @@ const Header = () => {
     <div className='flex bg-stone-800 py-6 px-2 justify-between text-white h-24'>
         <h3>Currency Converter</h3>
         <div className='right-0 flex list-none gap-2'>
-            <li className='bg-stone-500 flex justify-center items-center rounded-md h-10 w-20 hover:bg-stone-700 cursor-pointer'>Currencies</li>
-            <li className='bg-stone-500 flex justify-center items-center rounded-md h-10 w-20 hover:bg-stone-700 cursor-pointer'>Exchanges</li>
+           <Link to={'/home'}> <li className='bg-stone-500 flex justify-center items-center rounded-md h-10 w-20 hover:bg-stone-700 cursor-pointer'>Home</li></Link>
+           <Link to={'/exchanges'}> <li className='bg-stone-500 flex justify-center items-center rounded-md h-10 w-20 hover:bg-stone-700 cursor-pointer'>Exchanges</li></Link>
         </div>
         <div className='flex gap-2'>
             <h5>{user.firstname}</h5>

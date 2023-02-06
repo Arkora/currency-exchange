@@ -26,7 +26,7 @@ export const createCurrency = async (req,res) =>{
 
 export const getAllCurrencies = async (req,res) =>{
     try {
-        const currencies = await Currency.aggregate().project({id:1,name:1,currency:1,symbol:1})        
+        const currencies = await Currency.aggregate().project({id:1,name:1,currency:1,symbol:1}).sort({name:1})        
         res.status(200).send(currencies)
     } catch (error) {
         res.status(409).send({message:error.message})
@@ -37,7 +37,7 @@ export const findCurrency = async (req,res) =>{
     let {query} = req.params
     try {
         query = new RegExp(query, "i");
-        const currencies = await Currency.aggregate().match({ $or: [ { query }, { currency:  query},{symbol:query} ]}).project({id:1,name:1,currency:1,symbol:1})
+        const currencies = await Currency.aggregate().match({ $or: [ { name:query }, { currency:  query},{symbol:query} ]}).project({id:1,name:1,currency:1,symbol:1}).sort({name:1})
         res.status(200).send(currencies)
     } catch (error) {
         res.status(404).send({message:error.message})
@@ -47,8 +47,8 @@ export const findCurrency = async (req,res) =>{
 export const getCurrency = async (req,res) =>{
     const {id} = req.params
     try {   
-        const currency = await Currency.findById(id)
-        res.status(200).send({_id:currency._id,name:currency.name,currency:currency.currency,symbol:currency.symbol})
+        const {_id,name,currency,symbol} = await Currency.findById(id)
+        res.status(200).send({_id,name,currency,symbol})
     } catch (error) {
         res.status(404).send({message:error.message})
     }
@@ -56,11 +56,12 @@ export const getCurrency = async (req,res) =>{
 
 export const updateCurrency = async (req,res) =>{
     const {id} = req.params
-    const updatedCurrency = req.body
+    const updated = req.body
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send({message:`Invalid ID: ${id}`})
     try {
-        await Currency.findByIdAndUpdate(id,updatedCurrency)        
-        res.status(200).send({message:`${updatedCurrency.name} Updated Successfully`})
+        await Currency.findByIdAndUpdate(id,updated) 
+        const {_id,name,currency,symbol} = Currency.findById(id)
+        res.status(200).send({message:`${updated.name} Updated Successfully`,updated:{_id,name,currency,symbol}})
     } catch (error) {
         res.status(404).send({message:error.message})
     }
