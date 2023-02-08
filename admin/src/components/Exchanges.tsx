@@ -67,7 +67,7 @@ const Exchanges = () => {
             <div>
                 <h4 className='mb-2 '>From</h4>
                 <select ref={fromRef} name="from" id="from" className='w-56 h-10 text-black pl-4' onChange={(e) =>setFrom(e.target.value)} >
-                    <option value="" selected></option>
+                    <option value="" selected >Select from Currency</option>
                     {currencies.length? currencies.map((item:any)=>{
                         return <option value={item.currency}>{item.name} {item.currency} {item.symbol}</option>
                     }):
@@ -81,7 +81,7 @@ const Exchanges = () => {
             <div>
                 <h4 className='mb-2'>To</h4>
                 <select ref={toRef} name="to" id="to" className='w-56 h-10 pl-4 text-black' onChange={(e) =>setTo(e.target.value)} >
-                    <option value="" selected></option>
+                    <option value="" selected>Select to Currency</option>
                     {currencies.length? currencies.map((item:any)=>{
                         return <option value={item.currency}>{item.name} {item.currency} {item.symbol}</option>
                     }):

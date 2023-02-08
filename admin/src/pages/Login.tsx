@@ -1,8 +1,8 @@
-import React,{useState,useEffect} from 'react'
+import React,{useState} from 'react'
 import {AiFillEye, AiFillEyeInvisible} from 'react-icons/ai'
 import { Link,useNavigate } from 'react-router-dom'
 import { login } from '../api'
-import { getUser,setToken, setUser } from '../localStorage'
+import { setToken, setUser } from '../localStorage'
 import Alerts from '../components/Alerts'
 
 const Login = () => {
@@ -14,54 +14,30 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false)  
   const [formData,setFormData] = useState<FormData>({password:"",email:''})  
   const [formErrors, setFormErrors] = useState<any|string>({})
-  const [isSubmit, setIsSubmit] = useState(false)
   const [alert,setAlert] = useState<any>({res:'',err:''})
-  const user = getUser()
+ 
 
   
 
   const navigate = useNavigate()
-
-  const validate = (values:any) =>{
-    const errors:string|any = {};
-    
-    if(!values.email){
-      errors.email = "Email is required!"
-    }
-    if (!values.password) {
-      errors.password = "Password is required!";
-    } 
-    else if (values.password.length < 8) {
-      errors.password = "Password must be more than 8 characters!";
-    } else if (values.password.length > 20) {
-      errors.password = "Password cannot exceed more than 20 characters!";
-    }
-    return errors
-  }
-
   
+ 
+  // handle form data and perform login
   const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) =>{
-    e.preventDefault()
-    setIsSubmit(true)
-    setFormErrors(validate(formData))   
-    if(Object.entries(formErrors).length === 0 && isSubmit){
-        try {
-          const {data} = await login(formData)
-          setToken(data.token)         
-          setUser({firstname:data.firstname,lastname:data.lastname})         
-          navigate('/home')          
-        } catch (error:any) {
+    e.preventDefault()     
+      try {
+        const {data} = await login(formData)
+        setToken(data.token)         
+        setUser({firstname:data.firstname,lastname:data.lastname})         
+        navigate('/home')          
+      } catch (error:any) {
+        if(error.response.status = 400){
+          setFormErrors(error.response.data)
+        }  
           setAlert({...alert,err:error.response.data.message})
-        }
-    }
+        }    
   }
 
-  // useEffect(() => {
-  //   if(user){
-  //     navigate("/home")
-  //   }
-  // }, [user])
-  
   return (
     <div className='bg-white'>
       
@@ -94,7 +70,7 @@ const Login = () => {
                   <p>Create account now!</p>
                   <Link className='text-blue-700 underline' to={'/signup'}>Sign up</Link>
                 </div>
-                  <button className='customButton mt-6 '> Login</button>
+                  <button className='customButton mt-6 ' onClick={() => handleSubmit}> Login</button>
                 </form>              
               </div>
             </div>

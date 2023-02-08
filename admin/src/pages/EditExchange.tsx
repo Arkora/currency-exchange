@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react'
+import {useState,useEffect} from 'react'
 import Header from '../components/Header'
 import { useParams } from 'react-router-dom'
 import { getExchange,updateExchange,deleteExchange } from '../api'
@@ -12,6 +12,7 @@ const EditExchange = () => {
     const [formErrors, setFormErrors] = useState<any|string>({})
     const [toggle, setToggle] = useState<boolean>(false)
 
+    // get exchange by :id 
     const fetchExchange = async () =>{
         try{
             const {data} = await getExchange(params.id)  
@@ -21,6 +22,7 @@ const EditExchange = () => {
           }
     }
 
+    // handle form data and perform update
     const handleUpdate = async () => {
       setFormErrors({})
         try{
@@ -35,6 +37,7 @@ const EditExchange = () => {
           }
     }
 
+    
     const handleDelete = async () =>{
       try{
         const {data} = await deleteExchange(params.id) 

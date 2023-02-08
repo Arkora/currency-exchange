@@ -2,6 +2,7 @@ import Exchange from '../models/ExchangeScema.js'
 import Currency from '../models/CurrencySchema.js'
 import mongoose from 'mongoose'
 
+/** POST / create Exchange */
 export const createExchange = async (req,res) =>{
     const {from,to,ratio} = req.body
     const errors = {from:"",to:"",ratio:""}
@@ -40,21 +41,25 @@ export const createExchange = async (req,res) =>{
         res.status(409).send({message:error.message})
     }
 }
-
+/** PATCH :id/ return updated exchange specified by :id */
 export const updateExchange = async (req,res) =>{
     const {id} = req.params
     const updated = req.body
     const errors = {ratio:""}
+    // check updated value
     if(updated.ratio <= 0){
         errors.ratio = "Ratio can't have negative value or 0"
         return res.status(400).send(errors)
     }
     try {
+        // validate :id
         if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send({message:`Invalid ID: ${id}`})
+
         // check if exists
         const exists = await Exchange.findById(id)
         if(!exists) return res.status(404).send({message:"Conversion doesn't exist"})
-        // update
+
+        // perform update
         await Exchange.findByIdAndUpdate(id,updated)
         const {_id,name,from,to,ratio} = await Exchange.findById(id)
         res.status(200).send({message:`${name} Updated Successfully`,updated:{_id,name,from,to,ratio}})
@@ -64,6 +69,7 @@ export const updateExchange = async (req,res) =>{
     }
 }
 
+/** DELETE :id/ delete exchange by :id */
 export const deleteExchange = async (req,res) =>{
     const {id} = req.params
     try {
@@ -77,6 +83,7 @@ export const deleteExchange = async (req,res) =>{
     }
 }
 
+/** GET :query / return exchanges filtered by query */
 export const findExchange = async (req,res) =>{
     let {query} = req.params
     try {
@@ -88,6 +95,8 @@ export const findExchange = async (req,res) =>{
     }
 }
 
+/** GET / return all Exchanges */
+
 export const getAllExchanges = async (req,res) =>{
     try {
         const exchanges = await Exchange.aggregate().project({id:1,name:1,from:1,to:1,ratio:1}).sort({name:1})
@@ -97,7 +106,7 @@ export const getAllExchanges = async (req,res) =>{
     }
 }
 
-// get specific conversion
+/** GET :id / return exchange by :id */
 export const getExchange = async (req,res) =>{
     const {id} = req.params
     try {
@@ -108,20 +117,25 @@ export const getExchange = async (req,res) =>{
     }
 }
 
-
+/** GET :from :to :ammount / return calculated value of convarsion */
 export const calculateConversion = async (req,res) => {
     const {from,to,ammount} = req.query
-    if(ammount<0) return res.status(400).send({message:"Ammount can't have negative value or 0"})
+    // validate :ammount
+    if(ammount<0) return res.status(400).send({message:"Ammount can't have negative value "})
     try {
         
+        // retrive from  and to currencies from db
         const fromCurrency = await Currency.findOne({currency:from})
         const toCurrency = await Currency.findOne({currency:to})
+        // check currencies
         if(fromCurrency.currency === toCurrency.currency) return res.status(400).send({message:"Can't convert same currency"})
         if(!fromCurrency || !toCurrency) return res.status(404).send({message:"Currency not found"})
+
         const name = fromCurrency.currency.toLowerCase()+"to"+toCurrency.currency.toLowerCase()
         const exists = await Exchange.findOne({name:name})
         if(!exists) return res.status(404).send({message:"Conversion not found"})
 
+        // calculate convarsion
         const total = (exists.ratio * ammount).toFixed(6)
 
         res.status(200).send({total:total,fromSymbol:fromCurrency.symbol,ratio:exists.ratio})

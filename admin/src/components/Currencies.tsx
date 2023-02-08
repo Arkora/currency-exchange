@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Alerts from './Alerts';
 import { getCurrencies } from '../localStorage';
 
-const Currencies = ({data}:any) => {
+const Currencies = () => {
   interface currencyData{
     name:string;
     currency:string;
@@ -20,6 +20,7 @@ const Currencies = ({data}:any) => {
   const symbolRef = useRef<HTMLInputElement>(null!)
   const [alert,setAlert] = useState<any>({res:'',err:''})
   const [currencies,setCurrencies] = useState<any>([])
+  const [isReload,setIsReload] = useState<boolean>(false)
   
   
   const handleCurrencyFormData = async(e:React.FormEvent<HTMLFormElement>) =>{
@@ -30,6 +31,8 @@ const Currencies = ({data}:any) => {
       nameRef.current.value = ''
       currencyRef.current.value = ''
       symbolRef.current.value = ''
+      setCurrencyFormData({name:"",currency:"",symbol:""})
+      setIsReload(true)
     }catch(error:any){
         if(error.response.status = 400){
           setFormErrors(error.response.data)
@@ -37,6 +40,8 @@ const Currencies = ({data}:any) => {
           setAlert({...alert,err:error.response.data.message})        
     }  
   }
+
+
 
   const handleQuerySubmit = async() =>{    
     try{
@@ -56,8 +61,18 @@ const Currencies = ({data}:any) => {
       queryRef.current.value = null!
     )
       setCurrencies(getCurrencies())
+      
+    },[query])
     
-  },[query])
+    useEffect(()=>{
+      console.log(isReload)
+      if(isReload){
+        setCurrencies(getCurrencies())
+        setIsReload(false)
+       }
+  },[isReload])
+
+
 
 
   return (

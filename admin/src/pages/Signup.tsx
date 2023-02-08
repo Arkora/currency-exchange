@@ -3,7 +3,6 @@ import { AiFillEye,AiFillEyeInvisible } from 'react-icons/ai'
 import { Link,useNavigate} from 'react-router-dom'
 import { signup } from '../api'
 import Alerts from '../components/Alerts'
-import { getUser } from '../localStorage'
 
 const Signup = () => {
     interface SignupData{
@@ -13,18 +12,17 @@ const Signup = () => {
         password:string;
         
     }
-    const user = getUser()
     const [showPassword, setShowPassword] = useState(false)
     const [formData,setFormData] = useState<SignupData>({firstname:'',lastname:'',email:'',password:""})
     const [formErrors, setFormErrors] = useState<string|any>({})    
     const [password,setPassword] = useState<string>('')
-    const [passwordComp,setPasswordComp] = useState(true)
-    const [isSubmit, setIsSubmit] = useState<boolean>(false)
+    const [passwordComp,setPasswordComp] = useState(true)    
     const [alert,setAlert] = useState<any>({res:'',err:''})    
     
 
     const navigate = useNavigate()
 
+    // check repeated password
     useEffect(() => {
       if(password !== formData.password){
         setPasswordComp(false)
@@ -33,6 +31,7 @@ const Signup = () => {
       }
     }, [password,formData.password])
 
+    // validate form data
     const validate = (values:string|any) => {
       const errors:string|any = {};
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i
@@ -59,19 +58,20 @@ const Signup = () => {
       }
 
       return errors;   
-    };
+    };    
 
-    
-
+    // Post to api use
     const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) =>{
         e.preventDefault()
-        setIsSubmit(true)
         setFormErrors(validate(formData))   
-        if(Object.entries(formErrors).length === 0 && isSubmit){
+        if(Object.entries(formErrors).length === 0){
          try {
           const {data} = await signup(formData)          
           setAlert({...alert,res:data.message})  
-         } catch (error:any) {          
+         } catch (error:any) {     
+          if(error.response.status = 400){
+            setFormErrors(error.response.data)
+          } 
           setAlert({...alert,err:error.response.data.message})          
          }  
         }

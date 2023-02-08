@@ -9,7 +9,9 @@ import Exchanges from '../components/Exchanges'
 const Home = () =>{       
     const [alert,setAlert] = useState<any>({res:'',err:''})
     const [isLoaded,setIsLoaded] = useState<boolean>(false)
-
+    
+    
+    // fetch all currencies 
     const fetchCurrencies = async () =>{
         try{
             const {data} = await getAllCurrencies()
@@ -19,16 +21,19 @@ const Home = () =>{
             setAlert({...alert,err:error.response.data.message})
         }
     }
+
+    // init currencies when page load
     useEffect(() =>{
-        fetchCurrencies()
-    },[])
+        fetchCurrencies()        
+    },[])    
+    
 return(
     <div className="h-screen">
         <Header />
         {isLoaded ? 
         <div className="grid grid-cols-2 h-screen mt-2 p-2 gap-2">
             <div className='py-6'>
-                <Currencies />
+                <Currencies  />
             </div>
             <div className=" bg-slate-800 flex justify-center items-center  ">
                 <Exchanges />

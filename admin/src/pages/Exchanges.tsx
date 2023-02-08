@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react'
+import {useState,useEffect} from 'react'
 import Header from '../components/Header'
 import { useNavigate } from 'react-router-dom'
 import { getAllExchanges,createExchange,findExchange } from '../api'
@@ -20,6 +20,8 @@ const Exchanges = () => {
 
 
   const navigate = useNavigate()
+
+  // fetch all exchanges from api
   const fetchExchanges = async() =>{
     try {
         const {data} = await getAllExchanges()
@@ -29,6 +31,7 @@ const Exchanges = () => {
     }
   }
 
+  // fetch exchanges by searching value
   const fetchExchange = async () =>{
     try {
       const {data} = await findExchange(query)
@@ -38,6 +41,7 @@ const Exchanges = () => {
   }
   }
 
+  // handle form and post to api
   const handleAddSumbit = async() =>{
     try {
       const {data} = await createExchange(formData)
@@ -50,10 +54,12 @@ const Exchanges = () => {
   }
   }
 
+  // init exchanges when page load
   useEffect(()=>{
     fetchExchanges()
   },[])
 
+  // when query change fetch data by query else get fetch all
   useEffect(()=>{
     if(query){
       fetchExchange()
@@ -126,7 +132,7 @@ const Exchanges = () => {
             <tbody>          
               {exchanges.length? exchanges.map((item:any)=>{
                 return(
-                  <tr key={item._id} className='h-10 border  border-black'> 
+                  <tr key={item._id} className='h-10 border-b-2 border-black'> 
                   <td className='px-4'>{item.name}</td>
                   <td className='px-4'>{item.from}</td>
                   <td className='px-4'>{item.to}</td>

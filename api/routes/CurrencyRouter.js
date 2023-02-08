@@ -8,7 +8,7 @@ router.get('/',getAllCurrencies)
 router.get('/:id',getCurrency)
 router.get('/find/:query',findCurrency)
 router.post('/create',auth,createCurrency)
-router.patch('/update/:id',updateCurrency)
-router.delete('/delete/:id',deleteCurrency)
+router.patch('/update/:id',auth,updateCurrency)
+router.delete('/delete/:id',auth,deleteCurrency)
 
 export default router

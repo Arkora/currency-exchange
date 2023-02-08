@@ -1,4 +1,4 @@
-import React,{useEffect,useState,useRef} from 'react'
+import {useEffect,useState,useRef} from 'react'
 import { useParams } from 'react-router-dom'
 import Header from '../components/Header'
 import { deleteCurrency, getCurrency, updateCurrency } from '../api'
@@ -13,7 +13,6 @@ const EditCurrency = () => {
       }
 
     const params = useParams()
-    const [currency,setCurrency] = useState<any>({})
     const [alert,setAlert] = useState<any>({res:'',err:''})
     const nameRef = useRef<HTMLInputElement>(null!)
     const currencyRef = useRef<HTMLInputElement>(null!)
@@ -24,11 +23,10 @@ const EditCurrency = () => {
     
 
 
-
+    // fetch currency by id and assing values to states
     const fetchCurrency = async() =>{
         try{
-            const {data} = await getCurrency(params.id)
-            setCurrency(data)
+            const {data} = await getCurrency(params.id)            
             nameRef.current.value = data.name
             currencyRef.current.value = data.currency
             symbolRef.current.value = data.symbol
@@ -38,15 +36,21 @@ const EditCurrency = () => {
         }
     }
 
+    // handle form and post data of form
     const handleCurrencyFormData = async() =>{
         try{      
           const {data} = await updateCurrency(params.id,currencyFormData)                        
             setAlert({...alert,res:data.message})
             fetchCurrency()
         }catch(error:any){
+            if(error.response.status = 400){
+                setFormErrors(error.response.data)
+              } 
             setAlert({...alert,err:error.response.data.message})
         }
       }
+
+    
     const handleDelete = async() =>{
         try{
             const {data} = await deleteCurrency(params.id)
@@ -55,10 +59,12 @@ const EditCurrency = () => {
             setAlert({...alert,err:error.response.data.message})
         }
     }
+
     
     useEffect(()=>{
         fetchCurrency()        
     },[])
+
   return (
     <div>
         <Header />
