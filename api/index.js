@@ -7,8 +7,8 @@ import UserRouter from './routes/UserRouter.js'
 import AuthRouter from './routes/AuthRouter.js'
 import CurrencyRouter from './routes/CurrencyRouter.js'
 import ExchangeRouter from './routes/ExchangeRouter.js'
-import auth from './middlewares/Auth.js'
-
+import swaggerJSDoc from 'swagger-jsdoc'
+import swaggerUI from 'swagger-ui-express'
 
 
 const app = express()
@@ -20,6 +20,40 @@ app.use(cors({
     origin:'http://localhost:3000',    
 }))
 
+const options = {
+	definition: {
+		openapi: "3.0.0",
+		info: {
+			title: "Currency exchange API",
+			version: "1.0.0",
+			description: "A simple currency exchange API",
+		},
+        components: {
+            securitySchemas: {
+              bearerAuth: {
+                type: "http",
+                scheme: "bearer",
+                bearerFormat: "JWT",
+              },
+            },
+          },
+          security: [
+            {
+              bearerAuth: [],
+            },
+          ],        
+		servers: [
+			{
+				url: "http://localhost:8000/api/v1",
+			},
+		],
+	},
+	apis: ["./routes/*.js"],
+}
+
+const specs = swaggerJSDoc(options)
+
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs))
 
 
 app.use('/api/v1/user',UserRouter)
