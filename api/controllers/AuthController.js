@@ -6,7 +6,10 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
-/** POST / Retrive user from db  */
+/** POST 
+ *  @route /login
+ *  Retrive user from db
+ */
 export const login =  async(req,res) =>{
     const {email,password} = req.body
     const errors = {}    

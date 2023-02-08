@@ -1,7 +1,10 @@
 import Currency from '../models/CurrencySchema.js'
 import mongoose from 'mongoose'
 
-/** POST / create currency */
+/** POST 
+ * @route /create
+ * create currency 
+ */
 export const createCurrency = async (req,res) =>{
     const {name,currency,symbol} = req.body
     const errors = {name:'',currency:'',symbol:''}   
@@ -33,7 +36,11 @@ export const createCurrency = async (req,res) =>{
     }
 }
 
-/** GET/ return currencies of db */
+/** GET
+ * @route / 
+ * return currencies of db 
+ * 
+*/
 export const getAllCurrencies = async (req,res) =>{
     try {
         const currencies = await Currency.aggregate().project({id:1,name:1,currency:1,symbol:1}).sort({name:1})        
@@ -43,7 +50,10 @@ export const getAllCurrencies = async (req,res) =>{
     }
 }
 
-/**GET :query/ return currencies filtered by :query value  */ 
+/** GET 
+ * @route /find/:query
+ *  return currencies filtered by :query value  
+ */ 
 export const findCurrency = async (req,res) =>{
     let {query} = req.params
     try {
@@ -55,7 +65,10 @@ export const findCurrency = async (req,res) =>{
     }
 }
 
-/** GET :id/ return currency by :id */
+/** GET 
+* @route /:id
+* return currency by :id  
+*/
 export const getCurrency = async (req,res) =>{
     const {id} = req.params
     try {   
@@ -66,7 +79,10 @@ export const getCurrency = async (req,res) =>{
     }
 }
 
-/** PATCH :id/ return updated currency specified by :id */
+/** PATCH 
+ * @route /update/:id 
+ * return updated currency specified by :id 
+ */
 export const updateCurrency = async (req,res) =>{
     const {id} = req.params
     const updated = req.body
@@ -95,7 +111,10 @@ export const updateCurrency = async (req,res) =>{
         res.status(404).send({message:error.message})
     }
 }
-/** DELETE :id / delete currency by :id */
+/** DELETE 
+ * @route /delete/:id 
+ * delete currency by :id 
+ */
 export const deleteCurrency = async (req,res) =>{
     const {id} = req.params
 

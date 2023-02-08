@@ -1,7 +1,10 @@
 import User from '../models/UserSchema.js'
 import bcrypt from 'bcrypt'
 
-/** POST / create user  */
+/** POST 
+ * @route /register 
+ * create user  
+ */
 export const register = async(req,res)=>{
     
     const {firstname,lastname,email,password} = req.body 

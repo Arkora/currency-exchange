@@ -2,7 +2,10 @@ import Exchange from '../models/ExchangeScema.js'
 import Currency from '../models/CurrencySchema.js'
 import mongoose from 'mongoose'
 
-/** POST / create Exchange */
+/** POST 
+ * @route /create
+ * create Exchange 
+ */
 export const createExchange = async (req,res) =>{
     const {from,to,ratio} = req.body
     const errors = {from:"",to:"",ratio:""}
@@ -41,7 +44,11 @@ export const createExchange = async (req,res) =>{
         res.status(409).send({message:error.message})
     }
 }
-/** PATCH :id/ return updated exchange specified by :id */
+
+/** PATCH 
+ * @route /update/:id 
+ * return updated exchange specified by :id 
+ */
 export const updateExchange = async (req,res) =>{
     const {id} = req.params
     const updated = req.body
@@ -69,7 +76,10 @@ export const updateExchange = async (req,res) =>{
     }
 }
 
-/** DELETE :id/ delete exchange by :id */
+/** DELETE 
+ * @route /delete/:id 
+ * delete exchange by :id 
+ */
 export const deleteExchange = async (req,res) =>{
     const {id} = req.params
     try {
@@ -83,7 +93,10 @@ export const deleteExchange = async (req,res) =>{
     }
 }
 
-/** GET :query / return exchanges filtered by query */
+/** GET 
+ *  @route /update/:query 
+ *  return exchanges filtered by :query 
+ */
 export const findExchange = async (req,res) =>{
     let {query} = req.params
     try {
@@ -95,7 +108,10 @@ export const findExchange = async (req,res) =>{
     }
 }
 
-/** GET / return all Exchanges */
+/** GET 
+ * @route / 
+ * return all Exchanges 
+ */
 
 export const getAllExchanges = async (req,res) =>{
     try {
@@ -106,7 +122,10 @@ export const getAllExchanges = async (req,res) =>{
     }
 }
 
-/** GET :id / return exchange by :id */
+/** GET 
+ * @route /:id 
+ * return exchange by :id 
+ */
 export const getExchange = async (req,res) =>{
     const {id} = req.params
     try {
@@ -117,7 +136,10 @@ export const getExchange = async (req,res) =>{
     }
 }
 
-/** GET :from :to :ammount / return calculated value of convarsion */
+/** GET 
+ * @route /convert?:from&:to&:ammount 
+ * return calculated value of convarsion 
+ */
 export const calculateConversion = async (req,res) => {
     const {from,to,ammount} = req.query
     // validate :ammount
