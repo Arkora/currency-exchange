@@ -83,3 +83,4 @@ mongoose.connect(process.env.DB_CONNECTION,() =>{
 
 app.listen(PORT,()=>{console.log("Server running on port: 8000")})
 
+export default app

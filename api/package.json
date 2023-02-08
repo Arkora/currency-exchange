@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "nodemon index.js"
   },
   "author": "",
@@ -20,8 +20,18 @@
     "mongoose": "^6.9.0"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.20.2",
+    "babel-jest": "^29.4.2",
     "nodemon": "^2.0.20",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.0"
-  }
+  },
+  "jest": {
+    "verbose": true,
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    },
+    "coveragePathIgnorePatterns": [ "node_modules" ],
+    "forceExit":true
+  }  
 }
